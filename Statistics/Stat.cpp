@@ -2,13 +2,13 @@
 
 
 template<typename T>
-Stat<T>::Stat() : deviation_count(0),sdeviation_count(0)
+Stat<T>::Stat() : deviation_count(0),sdeviation_count(0),mt(rd())
 {
 
 }
 
 template<typename T>
-Stat<T>::Stat(T * arr, size_t size) : deviation_count(0), sdeviation_count(0)
+Stat<T>::Stat(T * arr, size_t size) : deviation_count(0), sdeviation_count(0), mt(rd())
 {
     std::copy(arr, arr + size, data.begin());
 }
@@ -20,8 +20,15 @@ void Stat<T>::operator<<(T datum)
     sum  += datum;
     ssum += datum * datum;
     data.push_back(datum);
-    
+    count++;
     deviation_count = 0;
+}
+
+template<typename T>
+T Stat<T>::pick()
+{
+    uniform_int_distribution<size_t> uniform(0,count);
+    return data[uniform(mt)];
 }
 
 
@@ -37,6 +44,18 @@ double Stat<T>::variance()
     assert(count != 1 && "at least two element required\n");
     if (count == 1) return;
     return (ssum - sum * sum / double(count - 1)) / double(count - 1);
+}
+
+template<typename T>
+double Stat<T>::stdev()
+{
+    return sqrt(variance());
+}
+
+template<typename T>
+double Stat<T>::coefOfVar()
+{
+    return stdev() / mean();
 }
 
 template<typename T>
