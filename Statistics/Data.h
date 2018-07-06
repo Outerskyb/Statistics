@@ -4,12 +4,12 @@
 #include <random>
 
 template<typename T>
-class Stat
+class Data
 {
 public:
-    Stat();
-    Stat(T* arr, size_t size);
-    ~Stat();
+    Data();
+    Data(T* arr, size_t size);
+    ~Data();
 
 public:
     void operator<<(T datum);
@@ -23,7 +23,9 @@ public:
     double variance();
     double stdev();
     double coefOfVar();
+    void deviation_init();
     T deviation();
+    void sdeviation_init();
     T sdeviation();
 
 private:
@@ -41,13 +43,13 @@ private:
 
 
 template<typename T>
-Stat<T>::Stat() : deviation_count(0), sdeviation_count(0), mt(rd()), count(0), sum(0), ssum(0)
+Data<T>::Data() : deviation_count(0), sdeviation_count(0), mt(rd()), count(0), sum(0), ssum(0)
 {
 
 }
 
 template<typename T>
-Stat<T>::Stat(T * arr, size_t size) : deviation_count(0), sdeviation_count(0), mt(rd()), sum(0), ssum(0)
+Data<T>::Data(T * arr, size_t size) : deviation_count(0), sdeviation_count(0), mt(rd()), sum(0), ssum(0)
 {
     std::copy(arr, arr + size, data.begin());
     count = data.size();
@@ -55,7 +57,7 @@ Stat<T>::Stat(T * arr, size_t size) : deviation_count(0), sdeviation_count(0), m
 
 
 template<typename T>
-void Stat<T>::operator<<(T datum)
+void Data<T>::operator<<(T datum)
 {
     sum += datum;
     ssum += datum * datum;
@@ -65,7 +67,7 @@ void Stat<T>::operator<<(T datum)
 }
 
 template<typename T>
-T Stat<T>::pick()
+T Data<T>::pick()
 {
     uniform_int_distribution<size_t> uniform(0, count);
     return data[uniform(mt)];
@@ -73,13 +75,13 @@ T Stat<T>::pick()
 
 
 template<typename T>
-T Stat<T>::mean()
+T Data<T>::mean()
 {
     return sum / data.size();
 }
 
 template<typename T>
-double Stat<T>::variance()
+double Data<T>::variance()
 {
     //  assert(count != 1 && "at least two element required\n");
     if (count == 1) return -1;
@@ -87,19 +89,25 @@ double Stat<T>::variance()
 }
 
 template<typename T>
-double Stat<T>::stdev()
+double Data<T>::stdev()
 {
     return sqrt(variance());
 }
 
 template<typename T>
-double Stat<T>::coefOfVar()
+double Data<T>::coefOfVar()
 {
     return stdev() / mean();
 }
 
 template<typename T>
-T Stat<T>::deviation()
+inline void Data<T>::deviation_init()
+{
+    deviation_count = 0;
+}
+
+template<typename T>
+T Data<T>::deviation()
 {
     //마지막 넘어감
     if (deviation_count == data.size()) {
@@ -107,7 +115,7 @@ T Stat<T>::deviation()
         return;
     }
 
-    static T avr;
+    Dataic T avr;
     if (deviation_count == 0) {
         avr = mean();
     }
@@ -115,7 +123,13 @@ T Stat<T>::deviation()
 }
 
 template<typename T>
-T Stat<T>::sdeviation()
+inline void Data<T>::sdeviation_init()
+{
+    sdeviation_count = 0;
+}
+
+template<typename T>
+T Data<T>::sdeviation()
 {
     sdeviation_count++;
     //마지막 넘어감
@@ -132,7 +146,7 @@ T Stat<T>::sdeviation()
 }
 
 template<typename T>
-Stat<T>::~Stat()
+Data<T>::~Data()
 {
 
 }
