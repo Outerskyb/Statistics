@@ -52,6 +52,10 @@ template<typename T>
 Data<T>::Data(T * arr, size_t size) : deviation_count(0), sdeviation_count(0), mt(rd()), sum(0), ssum(0)
 {
     std::copy(arr, arr + size, data.begin());
+    for (auto datum : data) {
+        sum += datum;
+        ssum += datum * datum;
+    }
     count = data.size();
 }
 
