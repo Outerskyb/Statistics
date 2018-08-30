@@ -12,7 +12,7 @@ public:
     ~Data();
 
 public:
-    void operator<<(T datum);
+    Data<T> operator<<(T datum);
     size_t Count() { return count; }
 
 public:
@@ -61,13 +61,14 @@ Data<T>::Data(T * arr, size_t size) : deviation_count(0), sdeviation_count(0), m
 
 
 template<typename T>
-void Data<T>::operator<<(T datum)
+Data<T> Data<T>::operator<<(T datum)
 {
     sum += datum;
     ssum += datum * datum;
     data.push_back(datum);
     count++;
     deviation_count = 0;
+    return *this;
 }
 
 template<typename T>

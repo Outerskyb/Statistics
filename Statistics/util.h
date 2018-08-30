@@ -1,7 +1,7 @@
 #pragma once
 #include "Data.h"
 template <typename T>
-T cov(Data<T> d1, Data<T> d2) {
+T cov(Data<T>& d1, Data<T>& d2) {
     d1.deviation_init();
     d2.deviation_init();
     T dev_sum = 0;
